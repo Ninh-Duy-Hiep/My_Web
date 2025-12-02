@@ -9,7 +9,11 @@ import {
 } from 'class-validator';
 
 export class CreateUserDto {
-  @ApiProperty({ example: 'user@example.com', description: 'Email của user' })
+  @ApiProperty({
+    example: 'user@example.com',
+    description: 'Email của user',
+    required: false,
+  })
   @IsEmail({}, { message: 'Email không hợp lệ' })
   @IsOptional()
   email?: string;
@@ -17,7 +21,6 @@ export class CreateUserDto {
   @ApiProperty({
     example: 'Nguyen Van A',
     description: 'Tên của user',
-    required: false,
   })
   @IsString()
   name: string;
