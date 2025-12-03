@@ -2,9 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { deleteCookie } from "cookies-next";
 import { authService } from "@/services/auth.service";
-import { User, AuthContextType } from "@/types/auth";
+import { User, AuthContextType, LoginPayload, RegisterPayload } from "@/types/auth";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -32,18 +31,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loadUserFromStorage();
   }, []);
 
-  const login = async ({
-    userName,
-    password,
-    rememberMe = false,
-  }: {
-    userName: string;
-    password: string;
-    rememberMe?: boolean;
-  }) => {
+  const login = async (payload: LoginPayload) => {
     setIsLoading(true);
     try {
-      const res = await authService.login({ userName, password });
+      const res = await authService.login(payload);
 
       if (res.success) {
         const { accessToken, user } = res.data;
@@ -51,7 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         setUser(user);
 
-        if (rememberMe) {
+        if (payload.rememberMe) {
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("user", userString);
         } else {
@@ -59,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           sessionStorage.setItem("user", userString);
         }
 
-        router.push("/");
+        router.push("/dashboard");
       } else {
         throw new Error(typeof res.message === "string" ? res.message : "Đăng nhập thất bại");
       }
@@ -70,19 +61,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("user");
-    deleteCookie("accessToken");
-    deleteCookie("userRole");
-    setUser(null);
-    router.push("/login");
+  const register = async (payload: RegisterPayload) => {
+    setIsLoading(true);
+    try {
+      await authService.register(payload);
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      if (user) {
+        await authService.logout();
+      }
+    } catch (error) {
+      console.error("Logout API error:", error);
+    } finally {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("accessToken");
+      sessionStorage.removeItem("user");
+      setUser(null);
+      router.push("/login");
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, login, register, logout, isLoading, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );

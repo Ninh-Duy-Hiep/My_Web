@@ -1,4 +1,5 @@
-import axios from 'axios';
+import { ApiErrorResponse } from '@/types/api';
+import axios, { AxiosError } from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -27,7 +28,9 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isLoginRequest = error.config && error.config.url && error.config.url.includes('/auth/login');
+
+    if (error.response?.status === 401 && !isLoginRequest) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('user');
@@ -40,5 +43,31 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export function getErrorMessage(err: unknown): string {
+  let message = "An unexpected error occurred";
+
+  if (err instanceof AxiosError) {
+    const errorData = err.response?.data as ApiErrorResponse | undefined;
+    if (errorData) {
+      if (Array.isArray(errorData.validationErrors) && errorData.validationErrors.length > 0) {
+        message = errorData.validationErrors[0].error;
+      } else if (Array.isArray(errorData.message)) {
+        message = errorData.message[0];
+      } else {
+        message = errorData.message || errorData.error || message;
+      }
+    } else {
+      message = err.message;
+    }
+  } else if (err instanceof Error) {
+    message = err.message;
+  } else if (typeof err === "string") {
+    message = err;
+  }
+
+  return message;
+}
+
 
 export default axiosInstance;

@@ -1,25 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { AxiosError } from "axios";
-import { User, LockKeyhole, Mail, Facebook, Github, Linkedin, Chrome } from "lucide-react";
-
+import { User, Mail, Facebook, Github, Linkedin, Chrome, UserRoundPen, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ApiErrorResponse } from "@/types/api";
 import { Checkbox } from "@/components/ui/checkbox";
-import { loginSchema, LoginSchemaType, registerSchema } from "./form";
+import { loginSchema, LoginSchemaType, registerSchema, RegisterSchemaType } from "./form";
 import { CustomInput, SocialIcon } from "./ui";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
+import { getErrorMessage } from "@/lib/axios";
 
 export default function LoginPage() {
   const [isRegister, setIsRegister] = useState(false);
-  const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const { login } = useAuth();
+  const { login, register } = useAuth();
+  const { success, error } = useToast();
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -28,46 +28,50 @@ export default function LoginPage() {
 
   const registerForm = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { userName: "", email: "", password: "" },
+    defaultValues: { fullName: "", userName: "", email: "", password: "" },
   });
+
+  useEffect(() => {
+    if (isRegister) {
+      registerForm.reset();
+    } else {
+      loginForm.reset();
+    }
+  }, [isRegister, loginForm, registerForm]);
 
   async function onLoginSubmit(values: LoginSchemaType) {
     setIsLoading(true);
-    setError("");
     try {
       await login({
         userName: values.userName,
         password: values.password,
         rememberMe: values.rememberMe,
       });
-
+      success("Success", { description: "Login successful!" });
     } catch (err) {
-      handleError(err);
+      error("Error", { description: getErrorMessage(err) });
     } finally {
       setIsLoading(false);
     }
   }
 
-  async function onRegisterSubmit(values: z.infer<typeof registerSchema>) {
-    console.log("Register values:", values);
-    alert("Chức năng đăng ký đang phát triển!");
-  }
-
-  const handleError = (err: unknown) => {
-    if (err instanceof AxiosError) {
-      const errorData = err.response?.data as ApiErrorResponse | undefined;
-      if (errorData) {
-        const message = Array.isArray(errorData.message) ? errorData.message[0] : errorData.message;
-        setError(message || errorData.error || "Lỗi xác thực");
-      } else {
-        setError(err.message);
-      }
-    } else if (err instanceof Error) {
-      setError(err.message);
-    } else {
-      setError("Đã có lỗi không mong muốn xảy ra");
+  async function onRegisterSubmit(values: RegisterSchemaType) {
+    setIsLoading(true);
+    try {
+      await register({
+        userName: values.userName,
+        email: values.email,
+        fullName: values.fullName,
+        password: values.password,
+      });
+      success("Success", { description: "Registration successful!" });
+      setIsRegister(false);
+    } catch (err) {
+      error("Error", { description: getErrorMessage(err) });
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-linear-to-r from-[#e2e2e2] to-[#c9d6ff]">
@@ -84,27 +88,53 @@ export default function LoginPage() {
           <form
             onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
             className="bg-white flex flex-col items-center justify-center h-full px-10 text-center"
+            noValidate
           >
             <h1 className="text-4xl font-bold mb-4">Register</h1>
 
             <div className="w-full space-y-3">
               <CustomInput
+                icon={<UserRoundPen className="w-5 h-5" />}
+                placeholder="FullName"
+                register={registerForm.register("fullName")}
+              />
+              {registerForm.formState.errors.fullName && (
+                <p className="text-red-500 text-sm text-start">{registerForm.formState.errors.fullName.message}</p>
+              )}
+              <CustomInput
                 icon={<User className="w-5 h-5" />}
-                placeholder="Username"
+                placeholder="UserName"
                 register={registerForm.register("userName")}
               />
+              {registerForm.formState.errors.userName && (
+                <p className="text-red-500 text-sm text-start">{registerForm.formState.errors.userName.message}</p>
+              )}
               <CustomInput
                 icon={<Mail className="w-5 h-5" />}
                 placeholder="Email"
                 type="email"
                 register={registerForm.register("email")}
               />
+              {registerForm.formState.errors.email && (
+                <p className="text-red-500 text-sm text-start">{registerForm.formState.errors.email.message}</p>
+              )}
               <CustomInput
-                icon={<LockKeyhole className="w-5 h-5" />}
+                icon={
+                  <div onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5 cursor-pointer" />
+                    ) : (
+                      <Eye className="w-5 h-5 cursor-pointer" />
+                    )}
+                  </div>
+                }
                 placeholder="Password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 register={registerForm.register("password")}
               />
+              {registerForm.formState.errors.password && (
+                <p className="text-red-500 text-sm text-start">{registerForm.formState.errors.password.message}</p>
+              )}
             </div>
 
             <Button className="mt-6 w-full bg-[#512da8] hover:bg-[#5c6bc0] uppercase font-bold tracking-wider cursor-pointer">
@@ -128,6 +158,7 @@ export default function LoginPage() {
           <form
             onSubmit={loginForm.handleSubmit(onLoginSubmit)}
             className="bg-white flex flex-col items-center justify-center h-full px-10 text-center"
+            noValidate
           >
             <h1 className="text-4xl font-bold mb-4">Login</h1>
 
@@ -137,12 +168,26 @@ export default function LoginPage() {
                 placeholder="Username"
                 register={loginForm.register("userName")}
               />
+              {loginForm.formState.errors.userName && (
+                <p className="text-red-500 text-sm text-start">{loginForm.formState.errors.userName.message}</p>
+              )}
               <CustomInput
-                icon={<LockKeyhole className="w-5 h-5" />}
+                icon={
+                  <div onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5 cursor-pointer" />
+                    ) : (
+                      <Eye className="w-5 h-5 cursor-pointer" />
+                    )}
+                  </div>
+                }
                 placeholder="Password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 register={loginForm.register("password")}
               />
+              {loginForm.formState.errors.password && (
+                <p className="text-red-500 text-sm text-start">{loginForm.formState.errors.password.message}</p>
+              )}
             </div>
 
             <div className="flex items-center justify-between w-full mt-4 text-xs">
@@ -154,15 +199,13 @@ export default function LoginPage() {
                   className="cursor-pointer"
                 />
                 <label htmlFor="remember" className="cursor-pointer">
-                  Remember
+                  Remember me
                 </label>
               </div>
               <a href="#" className="hover:underline">
                 Forgot password?
               </a>
             </div>
-
-            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
             <Button
               disabled={isLoading}

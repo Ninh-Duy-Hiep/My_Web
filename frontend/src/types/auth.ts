@@ -5,10 +5,29 @@ export interface User {
   role: string;
 }
 
+export interface LoginResponse {
+  accessToken: string;
+  user: User;
+}
+
+export interface LoginPayload {
+  userName: string;
+  password: string;
+  rememberMe?: boolean;
+}
+
+export interface RegisterPayload {
+  userName: string;
+  email?: string;
+  fullName: string;
+  password: string;
+}
+
 export interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (params: { userName: string; password: string; rememberMe?: boolean }) => Promise<void>;
+  login: (params: LoginPayload) => Promise<void>;
+  register: (params: RegisterPayload) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }

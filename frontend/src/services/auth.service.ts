@@ -1,24 +1,19 @@
-import axiosInstance from '@/lib/axios';
-import { ApiSuccessResponse } from '@/types/api';
-
-export interface LoginResponse {
-  accessToken: string;
-  user: {
-    id: string;
-    email: string | null;
-    userName: string;
-    role: string;
-  };
-}
-
-export interface LoginRequest {
-  userName: string;
-  password: string;
-}
+import axiosInstance from "@/lib/axios";
+import { ApiSuccessResponse } from "@/types/api";
+import { LoginPayload, LoginResponse, RegisterPayload } from "@/types/auth";
 
 export const authService = {
-  login: async (payload: LoginRequest) => {
-    const response = await axiosInstance.post<ApiSuccessResponse<LoginResponse>>('/auth/login', payload);
+  login: async (payload: LoginPayload) => {
+    const response = await axiosInstance.post<ApiSuccessResponse<LoginResponse>>("/auth/login", payload);
     return response.data;
+  },
+
+  register: async (payload: RegisterPayload) => {
+    const response = await axiosInstance.post<ApiSuccessResponse<LoginResponse>>("/auth/register", payload);
+    return response.data;
+  },
+
+  logout: async () => {
+    return await axiosInstance.post<ApiSuccessResponse<void>>("/auth/logout");
   },
 };
