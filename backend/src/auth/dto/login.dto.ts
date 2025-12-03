@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MinLength, Matches } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  MinLength,
+  Matches,
+  IsBoolean,
+  IsOptional,
+} from 'class-validator';
 
 export class LoginDto {
   @ApiProperty({ example: 'abc@123' })
@@ -15,4 +22,13 @@ export class LoginDto {
       'Password must contain at least 1 lowercase letter, 1 uppercase letter and 1 special character',
   })
   password: string;
+
+  @ApiProperty({
+    example: false,
+    description: 'Remember login',
+    required: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  rememberMe: boolean = false;
 }
