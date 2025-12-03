@@ -10,28 +10,44 @@ import {
 
 export class CreateUserDto {
   @ApiProperty({
+    example: 'abc@123',
+    description: 'Login name',
+  })
+  @IsString()
+  @MinLength(6, { message: 'Login name must be at least 6 characters' })
+  @IsNotEmpty()
+  userName: string;
+
+  @ApiProperty({
     example: 'user@example.com',
-    description: 'Email của user',
+    description: 'Email',
     required: false,
   })
-  @IsEmail({}, { message: 'Email không hợp lệ' })
+  @IsEmail({}, { message: 'Invalid email' })
   @IsOptional()
   email?: string;
 
   @ApiProperty({
     example: 'Nguyen Van A',
-    description: 'Tên của user',
+    description: 'FullName',
   })
   @IsString()
-  name: string;
+  fullName: string;
 
-  @ApiProperty({ example: 'Password@123', description: 'Mật khẩu mạnh' })
+  @ApiProperty({ example: 'Password@123', description: 'Password' })
   @IsString()
   @IsNotEmpty()
-  @MinLength(8, { message: 'Mật khẩu phải có ít nhất 8 ký tự' })
+  @MinLength(8, { message: 'Password must be at least 8 characters' })
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).+$/, {
     message:
-      'Mật khẩu phải chứa ít nhất 1 chữ thường, 1 chữ hoa và 1 ký tự đặc biệt',
+      'Password must contain at least 1 lowercase letter, 1 uppercase letter and 1 special character',
   })
   password: string;
+
+  @ApiProperty({
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
+  @IsString()
+  @IsNotEmpty()
+  roleId: string;
 }

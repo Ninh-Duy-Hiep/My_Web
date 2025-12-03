@@ -1,8 +1,14 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  ClassSerializerInterceptor,
+  ValidationPipe,
+} from '@nestjs/common';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { ValidationError } from 'class-validator';
+import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,22 +17,38 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true, //Filter out redundant fields
       forbidNonWhitelisted: true, //Report an error if the send field is not determined.
+      transform: true,
+      exceptionFactory: (validationErrors: ValidationError[] = []) => {
+        const formatError = (errors: ValidationError[]) => {
+          return errors.map((err) => {
+            const errorMsg = Object.values(err.constraints || {})[0];
+            return {
+              field: err.property,
+              error: errorMsg,
+            };
+          });
+        };
+
+        return new BadRequestException(formatError(validationErrors));
+      },
     }),
   );
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   const config = new DocumentBuilder()
     .setTitle('My Web API')
     .setDescription('API documentation for User CRUD')
     .setVersion('1.0')
     .addTag('Users')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = process.env.PORT ?? 3000;
+  const port = process.env.PORT ?? 5045;
   await app.listen(port);
 
   console.log(`Application is running on: http://localhost:${port}`);

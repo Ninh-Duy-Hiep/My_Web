@@ -44,7 +44,7 @@ export class TransformInterceptor<T> implements NestInterceptor<
           const { data: resultData, meta } = data;
           return {
             success: true,
-            message: 'Thành công',
+            message: 'Success',
             error: null,
             validationErrors: null,
             data: resultData,
@@ -54,7 +54,7 @@ export class TransformInterceptor<T> implements NestInterceptor<
 
         return {
           success: true,
-          message: 'Thành công',
+          message: 'Success',
           error: null,
           validationErrors: null,
           data: data as T,

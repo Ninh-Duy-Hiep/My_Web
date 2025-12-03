@@ -5,7 +5,7 @@ import { User } from '@prisma/client';
 export class UserEntity implements User {
   @ApiProperty({
     example: '550e8400-e29b-41d4-a716-446655440000',
-    description: 'ID tự động sinh',
+    description: 'Auto-generated ID',
   })
   id: string;
 
@@ -18,11 +18,17 @@ export class UserEntity implements User {
   @ApiProperty({ example: 'user@example.com', nullable: true })
   email: string | null;
 
+  @ApiProperty({ example: 'abc@123' })
+  userName: string;
+
   @ApiProperty({ example: 'Nguyen Van A' })
-  name: string;
+  fullName: string;
 
   @Exclude()
   password: string;
+
+  @Exclude()
+  roleId: string;
 
   constructor(partial: Partial<UserEntity>) {
     Object.assign(this, partial);
