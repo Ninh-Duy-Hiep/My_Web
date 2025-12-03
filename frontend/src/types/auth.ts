@@ -1,3 +1,9 @@
+export interface UserFilter {
+  name?: string;
+  page?: number;
+  limit?: number;
+}
+
 export interface User {
   id: string;
   userName: string;
