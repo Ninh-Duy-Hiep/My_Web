@@ -6,16 +6,14 @@ export class RolesSeeder {
   constructor(private readonly prisma: PrismaService) {}
 
   async seed() {
+    const allPermissions = await this.prisma.permission.findMany();
+    const allPermissionNames = allPermissions.map((p) => p.name);
+
     const roles = [
       {
         name: 'ADMIN',
         description: 'Administrator',
-        permissions: ['USER_READ', 'USER_CREATE', 'USER_UPDATE', 'USER_DELETE'],
-      },
-      {
-        name: 'USER',
-        description: 'User',
-        permissions: ['USER_READ', 'USER_CREATE', 'USER_UPDATE', 'USER_DELETE'],
+        permissions: allPermissionNames,
       },
     ];
 
@@ -41,6 +39,6 @@ export class RolesSeeder {
         },
       });
     }
-    Logger.log('Roles seeded.', 'RolesSeeder');
+    Logger.log('Roles seeded with permissions.', 'RolesSeeder');
   }
 }

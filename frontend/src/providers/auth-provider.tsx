@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         router.push("/dashboard");
       } else {
-        throw new Error(typeof res.message === "string" ? res.message : "Đăng nhập thất bại");
+        throw new Error(typeof res.message === "string" ? res.message : "Login failed");
       }
     } catch (error) {
       throw error;

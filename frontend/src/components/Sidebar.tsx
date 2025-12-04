@@ -80,7 +80,7 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger asChild  className="cursor-pointer">
                 <SidebarMenuButton>
                   <User2 /> Username
                   <ChevronUp className="ml-auto" />

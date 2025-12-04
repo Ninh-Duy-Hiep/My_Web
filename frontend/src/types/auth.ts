@@ -7,6 +7,7 @@ export interface UserFilter {
 export interface User {
   id: string;
   userName: string;
+  fullName: string;
   email: string | null;
   role: string;
 }

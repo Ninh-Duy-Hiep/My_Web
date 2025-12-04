@@ -1,44 +1,59 @@
 "use client";
-import { useDebounce } from "@/hooks/use-debounce";
-import { useToast } from "@/hooks/use-toast";
-import { getErrorMessage } from "@/lib/axios";
-import { usersService } from "@/services/users.service";
-import { User, UserFilter } from "@/types/auth";
-import { useCallback, useEffect, useState } from "react";
+
+import { useState } from "react";
+import { useUsers } from "./hooks/use-users";
+import { UserList } from "./components/user-list";
+import { UserFilters } from "./components/user-filters";
+import { User } from "@/types/auth";
+import { UserFormDialog } from "./components/user-form-dialog";
 
 export default function UsersManagementPage() {
-  const [loading, setLoading] = useState(true);
-  const { error } = useToast();
-  const [filters, setFilters] = useState<UserFilter>({});
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(5);
-  const [searchValue, setSearchValue] = useState("");
+  const { users, loading, filters, setFilter, refresh, deleteUser } = useUsers();
 
-  const [users, setUsers] = useState<User[]>();
-  const debouncedName = useDebounce(filters.name, 500);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const loadUsers = useCallback(async () => {
-    try {
-      setLoading(true);
+  const handleCreate = () => {
+    setSelectedUser(null);
+    setIsSheetOpen(true);
+  };
 
-      const apiFilters: UserFilter = {
-        name: debouncedName,
-        page: currentPage,
-        limit: pageSize,
-      };
+  const handleEdit = (user: User) => {
+    setSelectedUser(user);
+    setIsSheetOpen(true);
+  };
 
-      const response = await usersService.getUsers(apiFilters);
-      setUsers(response)
-    } catch (err) {
-      error("Error", { description: getErrorMessage(err) || "Error while retrieving data" });
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, debouncedName, pageSize, error]);
+  const handleFormSubmit = async (values: any) => {
+    console.log("Submit:", values);
+    refresh();
+  };
 
-  useEffect(() => {
-    loadUsers();
-  }, [loadUsers]);
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Users</h1>
+        <p className="text-muted-foreground">Manage your system users here.</p>
+      </div>
 
-  return <div></div>;
+      <UserFilters 
+        filters={filters} 
+        onFilterChange={setFilter} 
+        onAddClick={handleCreate} 
+      />
+
+      <UserList
+        data={users}
+        isLoading={loading}
+        onEdit={handleEdit}
+        onDelete={deleteUser}
+      />
+
+      <UserFormDialog
+        open={isSheetOpen}
+        onOpenChange={setIsSheetOpen}
+        userToEdit={selectedUser}
+        onSubmit={handleFormSubmit}
+      />
+    </div>
+  );
 }

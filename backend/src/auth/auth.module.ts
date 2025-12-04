@@ -5,13 +5,15 @@ import { UsersModule } from 'src/users/users.module';
 import { JwtModule, JwtSignOptions } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
     UsersModule,
+    PassportModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET || 'secretKey_tam_thoi',
+      secret: process.env.JWT_SECRET || 'mySuperSecretKey123@456!',
       signOptions: {
         expiresIn: (process.env.JWT_EXPIRATION ||
           '1h') as JwtSignOptions['expiresIn'],

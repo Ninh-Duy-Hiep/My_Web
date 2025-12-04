@@ -6,10 +6,22 @@ import { PermissionsSeeder } from './database/seeds/permissions.seeder';
 import { RolesSeeder } from './database/seeds/roles.seeder';
 import { UsersSeeder } from './database/seeds/users.seeder';
 import { AuthModule } from './auth/auth.module';
-import { FilesController } from './common/controllers/files.controller';
+import { MediaModule } from './media/media.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { RolesModule } from './roles/roles.module';
 @Module({
-  imports: [UsersModule, AuthModule],
-  controllers: [FilesController],
+  imports: [
+    UsersModule,
+    AuthModule,
+    MediaModule,
+    RolesModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
+  ],
+  controllers: [],
   providers: [
     PrismaService,
     SeedService,
