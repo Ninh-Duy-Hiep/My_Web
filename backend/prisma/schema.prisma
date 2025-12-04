@@ -13,6 +13,7 @@ model User {
   email     String?   @unique
   fullName  String
   password  String
+  avatar    String?
   roleId    String
   role      Role    @relation(fields: [roleId], references: [id])
   createdAt DateTime @default(now())

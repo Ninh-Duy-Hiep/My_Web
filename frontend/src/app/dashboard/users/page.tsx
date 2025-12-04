@@ -28,9 +28,9 @@ export default function UsersManagementPage() {
       };
 
       const response = await usersService.getUsers(apiFilters);
-      console.log(response);
+      setUsers(response)
     } catch (err) {
-      error("Error", { description: getErrorMessage(err) || "Lỗi khi lấy dữ liệu" });
+      error("Error", { description: getErrorMessage(err) || "Error while retrieving data" });
     } finally {
       setLoading(false);
     }

@@ -24,6 +24,9 @@ export class UserEntity implements User {
   @ApiProperty({ example: 'Nguyen Van A' })
   fullName: string;
 
+  @ApiProperty({ example: 'uploads/avatars/abc.jpg', nullable: true })
+  avatar: string | null;
+
   @Exclude()
   password: string;
 

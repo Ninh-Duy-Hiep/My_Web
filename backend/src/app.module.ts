@@ -6,9 +6,10 @@ import { PermissionsSeeder } from './database/seeds/permissions.seeder';
 import { RolesSeeder } from './database/seeds/roles.seeder';
 import { UsersSeeder } from './database/seeds/users.seeder';
 import { AuthModule } from './auth/auth.module';
+import { FilesController } from './common/controllers/files.controller';
 @Module({
   imports: [UsersModule, AuthModule],
-  controllers: [],
+  controllers: [FilesController],
   providers: [
     PrismaService,
     SeedService,

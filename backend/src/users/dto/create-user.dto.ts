@@ -45,6 +45,15 @@ export class CreateUserDto {
   password: string;
 
   @ApiProperty({
+    example: 'uploads/avatars/image.jpg',
+    description: 'Avatar path',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  avatar?: string;
+
+  @ApiProperty({
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
   @IsString()

@@ -13,9 +13,9 @@ import {
   SidebarFooter,
   SidebarRail,
   useSidebar,
-  SidebarTrigger, // Import SidebarTrigger
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Home, Users, Settings, LogOut, LayoutDashboard, User2, ChevronUp } from "lucide-react";
+import { Home, Users, LogOut, LayoutDashboard, User2, ChevronUp, Shield } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
 import { usePathname } from "next/navigation";
@@ -33,9 +33,9 @@ const items = [
     icon: Users,
   },
   {
-    title: "Settings",
-    url: "/dashboard/settings",
-    icon: Settings,
+    title: "Roles Management",
+    url: "/dashboard/roles",
+    icon: Shield,
   },
 ];
 
