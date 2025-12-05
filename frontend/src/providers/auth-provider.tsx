@@ -80,12 +80,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Logout API error:", error);
     } finally {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("user");
-      sessionStorage.removeItem("accessToken");
-      sessionStorage.removeItem("user");
-      setUser(null);
       router.push("/login");
+
+      setTimeout(() => {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        sessionStorage.removeItem("accessToken");
+        sessionStorage.removeItem("user");
+        setUser(null);
+      }, 50);
     }
   };
 

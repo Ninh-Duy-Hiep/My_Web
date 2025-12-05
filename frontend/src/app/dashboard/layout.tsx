@@ -3,6 +3,7 @@
 import { AppSidebar } from "@/components/Sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { MobileFloatingButton } from "@/components/MobileFloatingButton";
+import { Header } from "@/components/Header";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,7 +12,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       <MobileFloatingButton />
 
-      <div className="flex-1 space-y-4 p-4 pt-6">{children}</div>
+      <div className="flex flex-1 flex-col min-h-screen">
+        <Header />
+        
+        <main className="flex-1 p-4 pt-6">
+            {children}
+        </main>
+      </div>
     </SidebarProvider>
   );
 }

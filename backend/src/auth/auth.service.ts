@@ -31,10 +31,14 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect email or password');
     }
 
+    const permissions = user.role?.permissions.map((p) => p.name) || [];
+
     const payload = {
       userId: user.id,
       email: user.email,
       userName: user.userName,
+      fullName: user.fullName,
+      avatar: user.avatar,
       role: user.role?.name,
     };
 
@@ -44,7 +48,10 @@ export class AuthService {
         id: user.id,
         email: user.email,
         userName: user.userName,
+        fullName: user.fullName,
+        avatar: user.avatar,
         role: user.role?.name,
+        permissions: permissions,
       },
     };
   }

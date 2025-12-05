@@ -10,16 +10,13 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarFooter,
   SidebarRail,
   useSidebar,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Home, Users, LogOut, LayoutDashboard, User2, ChevronUp, Shield } from "lucide-react";
+import { Home, Users, LayoutDashboard, Shield } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@/hooks/use-auth";
 import { usePathname } from "next/navigation";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 const items = [
   {
@@ -40,7 +37,6 @@ const items = [
 ];
 
 export function AppSidebar() {
-  const { logout } = useAuth();
   const pathname = usePathname();
   const { state } = useSidebar();
 
@@ -64,7 +60,7 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title} isActive={pathname === item.url}>
-                    <Link href={item.url}>
+                    <Link href={item.url} prefetch={true}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
@@ -76,26 +72,6 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild  className="cursor-pointer">
-                <SidebarMenuButton>
-                  <User2 /> Username
-                  <ChevronUp className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">
-                <DropdownMenuItem onClick={logout} className="flex gap-1 cursor-pointer">
-                  <LogOut className="w-5 h-5" />
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/providers/auth-provider";
 import { Toaster } from "@/components/ui/sonner";
+import NextTopLoader from 'nextjs-toploader';
+import { ThemeProvider } from "@/components/Theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +29,26 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning={true}>
-        <AuthProvider>{children}</AuthProvider>
+        <NextTopLoader 
+          color="oklch(0.48 0.16 265)" 
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px oklch(0.48 0.16 265),0 0 5px oklch(0.48 0.16 265)"
+        />
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AuthProvider>{children}</AuthProvider>
+            <Toaster />
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>
