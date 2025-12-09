@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/axios";
 import { ApiSuccessResponse } from "@/types/api";
-import { LoginPayload, LoginResponse, RegisterPayload } from "@/types/auth";
+import { LoginPayload, LoginResponse, RegisterPayload } from "@/features/auth/types/auth";
 
 export const authService = {
   login: async (payload: LoginPayload) => {

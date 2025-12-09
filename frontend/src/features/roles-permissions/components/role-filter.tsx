@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 interface RoleFiltersProps {
   filters: RoleFilter;
   onFilterChange: (newFilters: Partial<RoleFilter>) => void;
+  onAddClick: () => void;
 }
 
-export function RoleFilters({ filters, onFilterChange }: RoleFiltersProps) {
+export function RoleFilters({ filters, onFilterChange, onAddClick }: RoleFiltersProps) {
   return (
     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
       <div className="relative flex justify-between items-center gap-2 w-full">
@@ -23,7 +24,7 @@ export function RoleFilters({ filters, onFilterChange }: RoleFiltersProps) {
           onChange={(e) => onFilterChange({ search: e.target.value, page: 1 })}
         />
       </div>
-      <Button className="w-full md:w-auto">
+      <Button onClick={onAddClick} className="w-full md:w-auto">
         <Plus className="h-5 w-5" /> Add New Role
       </Button>
     </div>

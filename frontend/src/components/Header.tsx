@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/features/auth/hooks/use-auth";
 import { Bell, ChevronDown, LogOut, Moon, Sun, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";

@@ -2,8 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { authService } from "@/services/auth.service";
-import { AuthContextType, LoginPayload, RegisterPayload } from "@/types/auth";
+import { authService } from "@/features/auth/api/auth.service";
+import { AuthContextType, LoginPayload, RegisterPayload } from "@/features/auth/types/auth";
 import { User } from "@/features/users/types";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
