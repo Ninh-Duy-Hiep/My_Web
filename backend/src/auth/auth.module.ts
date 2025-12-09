@@ -16,7 +16,7 @@ import { PassportModule } from '@nestjs/passport';
       secret: process.env.JWT_SECRET || 'mySuperSecretKey123@456!',
       signOptions: {
         expiresIn: (process.env.JWT_EXPIRATION ||
-          '1h') as JwtSignOptions['expiresIn'],
+          '3h') as JwtSignOptions['expiresIn'],
       },
     }),
   ],

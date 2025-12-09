@@ -18,7 +18,7 @@ export interface Role {
   description: string;
   createdAt: string;
   updatedAt: string;
-  permissions: Permission;
+  permissions: Permission[];
   _count: {
     users: number;
   };

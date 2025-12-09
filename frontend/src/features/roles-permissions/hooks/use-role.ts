@@ -52,10 +52,6 @@ export function useRoles() {
     }
   }, [error]);
 
-  useEffect(() => {
-    getAllRoles();
-  }, [getAllRoles]);
-
   const deleteRole = async (id: string) => {
     try {
       success("Deleted", { description: "Role deleted successfully" });
