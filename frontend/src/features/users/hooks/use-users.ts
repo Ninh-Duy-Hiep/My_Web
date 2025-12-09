@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { usersService } from "@/services/users.service";
-import { User, UserFilter } from "@/types/auth";
 import { useToast } from "@/hooks/use-toast";
 import { getErrorMessage } from "@/lib/axios";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ApiResponse } from "@/types/api";
+import { User, UserFilter } from "../types";
+import { usersService } from "../api/users.service";
 
 export function useUsers() {
   const [users, setUsers] = useState<ApiResponse<User[]>>();

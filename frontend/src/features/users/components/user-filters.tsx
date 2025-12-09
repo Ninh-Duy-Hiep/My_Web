@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, Search } from "lucide-react";
-import { UserFilter } from "@/types/auth";
+import { UserFilter } from "../types";
 
 interface UserFiltersProps {
   filters: UserFilter;

@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User } from "@/types/auth";
+import { User } from "../types";
 
 const userSchema = z.object({
   fullName: z.string().min(1, "Full name is required"),

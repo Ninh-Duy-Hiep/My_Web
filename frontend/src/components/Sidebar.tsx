@@ -25,12 +25,12 @@ const items = [
     icon: Home,
   },
   {
-    title: "Users Management",
+    title: "Users",
     url: "/dashboard/users",
     icon: Users,
   },
   {
-    title: "Roles Management",
+    title: "Roles & Permissions",
     url: "/dashboard/roles",
     icon: Shield,
   },
@@ -47,7 +47,7 @@ export function AppSidebar() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <LayoutDashboard className="w-5 h-5" />
           </div>
-          <span className="font-bold truncate group-data-[collapsible=icon]:hidden">My App</span>
+          <span className="font-bold truncate group-data-[collapsible=icon]:hidden">Web Management</span>
         </div>
         <SidebarTrigger className="hidden md:flex cursor-pointer" />
       </SidebarHeader>
