@@ -9,12 +9,12 @@ import { rolesPermisionsService } from "../api/roles-permission.service";
 import { useDebounce } from "@/hooks/use-debounce";
 
 export function useRoles() {
-  const [filters, setFilters] = useState<RoleFilter>({ page: 1, limit: 10, name: "" });
+  const [filters, setFilters] = useState<RoleFilter>({ page: 1, limit: 10, search: "" });
   const [roles, setRoles] = useState<ApiResponse<Role[]>>();
   const [loading, setLoading] = useState(true);
   const { success, error } = useToast();
 
-  const debouncedName = useDebounce(filters.name, 500);
+  const debouncedName = useDebounce(filters.search, 500);
 
   const loadRoles = useCallback(async () => {
     try {
@@ -23,7 +23,7 @@ export function useRoles() {
       const apiFilters = {
         page: filters.page,
         limit: filters.limit,
-        name: debouncedName,
+        ...(debouncedName ? { search: debouncedName } : {}),
       };
 
       const response = await rolesPermisionsService.getRoles(apiFilters);
@@ -39,9 +39,26 @@ export function useRoles() {
     loadRoles();
   }, [loadRoles]);
 
+  const getAllRoles = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const response = await rolesPermisionsService.getRoles({});
+      setRoles(response || []);
+    } catch (err) {
+      error("Error", { description: getErrorMessage(err) });
+    } finally {
+      setLoading(false);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    getAllRoles();
+  }, [getAllRoles]);
+
   const deleteRole = async (id: string) => {
     try {
-      success("Deleted", { description: "User deleted successfully" });
+      success("Deleted", { description: "Role deleted successfully" });
       loadRoles();
     } catch (err) {
       error("Error", { description: getErrorMessage(err) });
@@ -57,6 +74,7 @@ export function useRoles() {
     loading,
     filters,
     setFilter,
+    getAllRoles,
     refresh: loadRoles,
     deleteRole,
   };

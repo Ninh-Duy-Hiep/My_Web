@@ -20,8 +20,8 @@ export function RoleFilters({ filters, onFilterChange }: RoleFiltersProps) {
             type="search"
             placeholder="Search Roles..."
             className="w-full pl-9"
-            value={filters.name || ""}
-            onChange={(e) => onFilterChange({ name: e.target.value, page: 1 })} 
+            value={filters.search || ""}
+            onChange={(e) => onFilterChange({ search: e.target.value, page: 1 })} 
           />
         </div>
         

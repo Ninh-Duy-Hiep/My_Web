@@ -7,7 +7,7 @@ export interface Permission {
 }
 
 export interface RoleFilter {
-  name?: string;
+  search?: string;
   page?: number;
   limit?: number;
 }

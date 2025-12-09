@@ -11,10 +11,10 @@ import { usersService } from "../api/users.service";
 export function useUsers() {
   const [users, setUsers] = useState<ApiResponse<User[]>>();
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<UserFilter>({ page: 1, limit: 10, name: "" });
+  const [filters, setFilters] = useState<UserFilter>({ page: 1, limit: 10, search: "" });
   const { success, error } = useToast();
 
-  const debouncedName = useDebounce(filters.name, 500);
+  const debouncedName = useDebounce(filters.search, 500);
 
   const loadUsers = useCallback(async () => {
     try {
@@ -23,7 +23,7 @@ export function useUsers() {
       const apiFilters = {
         page: filters.page,
         limit: filters.limit,
-        name: debouncedName,
+        ...(debouncedName ? { search: debouncedName } : {}),
       };
 
       const response = await usersService.getUsers(apiFilters);

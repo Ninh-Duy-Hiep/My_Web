@@ -20,8 +20,8 @@ export function UserFilters({ filters, onFilterChange }: UserFiltersProps) {
             type="search"
             placeholder="Search users..."
             className="w-full pl-9"
-            value={filters.name || ""}
-            onChange={(e) => onFilterChange({ name: e.target.value, page: 1 })} 
+            value={filters.search || ""}
+            onChange={(e) => onFilterChange({ search: e.target.value, page: 1 })} 
           />
         </div>
         

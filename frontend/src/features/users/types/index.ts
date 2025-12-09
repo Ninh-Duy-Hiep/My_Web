@@ -1,5 +1,5 @@
 export interface UserFilter {
-  name?: string;
+  search?: string;
   page?: number;
   limit?: number;
 }
