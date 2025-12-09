@@ -1,15 +1,15 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { UserFilter } from "../types";
 import { Search } from "lucide-react";
+import { RoleFilter } from "../types";
 
-interface UserFiltersProps {
-  filters: UserFilter;
-  onFilterChange: (newFilters: Partial<UserFilter>) => void;
+interface RoleFiltersProps {
+  filters: RoleFilter;
+  onFilterChange: (newFilters: Partial<RoleFilter>) => void;
 }
 
-export function UserFilters({ filters, onFilterChange }: UserFiltersProps) {
+export function RoleFilters({ filters, onFilterChange }: RoleFiltersProps) {
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       
@@ -18,7 +18,7 @@ export function UserFilters({ filters, onFilterChange }: UserFiltersProps) {
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search users..."
+            placeholder="Search Roles..."
             className="w-full pl-9"
             value={filters.name || ""}
             onChange={(e) => onFilterChange({ name: e.target.value, page: 1 })} 

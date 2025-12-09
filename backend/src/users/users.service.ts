@@ -12,14 +12,14 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async getAllUsers(filter: FilterUserDto) {
-    const { page = 1, limit = 10, name } = filter;
+    const { page = 1, limit = 10, search } = filter;
     const skip = (page - 1) * limit;
 
     const where: Prisma.UserWhereInput = {};
 
-    if (name) {
+    if (search) {
       where.fullName = {
-        contains: name,
+        contains: search,
       };
     }
 

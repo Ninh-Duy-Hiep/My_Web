@@ -7,12 +7,14 @@ import {
   Delete,
   Put,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { FilterRoleDto } from './dto/filter-rol.dto';
 
 @ApiTags('Roles & Permissions')
 @ApiBearerAuth()
@@ -37,8 +39,8 @@ export class RolesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all roles' })
-  findAll() {
-    return this.rolesService.getRole();
+  findAll(@Query() filter: FilterRoleDto) {
+    return this.rolesService.getRole(filter);
   }
 
   @Get(':id')

@@ -6,17 +6,61 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { Prisma } from '@prisma/client';
+import { FilterRoleDto } from './dto/filter-rol.dto';
 
 @Injectable()
 export class RolesService {
   constructor(private prisma: PrismaService) {}
 
-  async getRole() {
+  async getRole(filter: FilterRoleDto) {
+    const { page, limit, search } = filter;
+
+    const where: Prisma.RoleWhereInput = {
+      ...(search
+        ? {
+            name: {
+              contains: search,
+            },
+          }
+        : {}),
+    };
+
+    if (page && limit) {
+      const skip = (page - 1) * limit;
+
+      const [roles, total] = await Promise.all([
+        this.prisma.role.findMany({
+          where,
+          skip,
+          take: limit,
+          include: {
+            permissions: true,
+            _count: { select: { users: true } },
+          },
+          orderBy: { createdAt: 'desc' },
+        }),
+        this.prisma.role.count({ where }),
+      ]);
+
+      return {
+        data: roles,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    }
+
     return this.prisma.role.findMany({
+      where,
       include: {
         permissions: true,
         _count: { select: { users: true } },
       },
+      orderBy: { createdAt: 'desc' },
     });
   }
 

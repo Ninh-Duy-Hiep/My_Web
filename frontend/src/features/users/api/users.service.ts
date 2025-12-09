@@ -1,6 +1,6 @@
-import { ApiResponse } from './../types/api';
 import axiosInstance from "@/lib/axios";
-import { User, UserFilter } from "@/types/auth";
+import { User, UserFilter } from "../types";
+import { ApiResponse } from "@/types/api";
 
 export const usersService = {
   getUsers: async (params: UserFilter) => {
